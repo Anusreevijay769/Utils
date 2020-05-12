@@ -18,17 +18,18 @@ class FileHelper():
                       +str(format(CURRENT_DATETIME.minute,'02d'))
                       +str(format(CURRENT_DATETIME.second,'02d'))
                       )
+        self.eosString = '/eos/uscms'
         print "==> Time stamp: ",self.dirName
 
     def CreateLogDirWithDate(self):
         """Member function to create directory to store log files.
-       
+
         Returns:
             [type] -- [description]
-
         """
         LogDirName = str(self.logPath)+os.sep+str(self.dirName)
         os.system('mkdir -p '+ LogDirName)
+        print "==> Created directory for log files: ",LogDirName
         return LogDirName
 
     def CreateSotreArea(self,path):
@@ -42,7 +43,7 @@ class FileHelper():
 
         """
         os.system('xrdfs root://cmseos.fnal.gov/ mkdir '+path)
-        print "==> path: ",path
+        print "==> Created dire at eos path: ",path
         return path
 
     def createStoreDirWithDate(self, additionalString1="", additionalString2="", additionalString3=""):
@@ -64,15 +65,15 @@ class FileHelper():
         if additionalString2 != "":
             path = self.CreateSotreArea(path + os.sep + additionalString2)
         if additionalString3 != "":
-            path = self.CreateSotreArea(path + os.sep + additionalString3)                        
+            path = self.CreateSotreArea(path + os.sep + additionalString3)
         path = self.CreateSotreArea(path + os.sep + self.dirName) # append dateTime stamp at the end
         return path
 
     def CreateDirWithDate(self):
         """create both log and store area
-        
+
         [description]
-        
+
         Returns:
             string -- first string contains name of log directory
             string -- second string contains name of store area directory
@@ -83,4 +84,6 @@ class FileHelper():
         os.system('mkdir -p '+ logDirName)
         os.system('xrdfs root://cmseos.fnal.gov/ mkdir '+storeAreaDirName1)
         os.system('xrdfs root://cmseos.fnal.gov/ mkdir '+storeAreaDirName2)
+        print "==> Created directory for log files: ",logDirName
+        print "==> Created dire at eos path: ",storeAreaDirName2
         return logDirName, storeAreaDirName2
