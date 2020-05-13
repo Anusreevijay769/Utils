@@ -20,7 +20,7 @@ class condorJobHelper(object):
         self.Arguments = Arguments
         self.Queue = Queue
 
-    def jdlFileCreater(self):
+    def jdlFileHeaderCreater(self):
         outJdl = open(self.fileName+'.jdl','w')
         outJdl.write('Executable = '+self.fileName+'.sh')
         outJdl.write('\n'+'Universe = vanilla')
@@ -31,24 +31,18 @@ class condorJobHelper(object):
         outJdl.write('\n'+'x509userproxy = $ENV(X509_USER_PROXY)')
         if self.request_memory != 0: outJdl.write('\n'+'request_memory = '+str(self.request_memory))
         if self.request_cpus != 0: outJdl.write('\n'+'request_cpus = '+ str(self.request_cpus))
-        # outJdl.write('\n'+'Output = '+self.logFilePath+'.stdout')
-        # outJdl.write('\n'+'Error  = '+self.logFilePath+'.stdout')
-        # outJdl.write('\n'+'Log  = '+self.logFilePath+'.log')
-        # outJdl.write('\n'+'Arguments = $(Cluster) $(Process) '+self.Arguments)
-        # outJdl.write('\n'+'Queue '+self.Queue)
-        # outJdl.close()
         return self.fileName+'.jdl'
 
     def jdlFileAppendLogInfo(self):
         outJdl = open(self.fileName+'.jdl','a')
-        outJdl.write('\n'+'Output = '+self.logFilePath+os.sep+self.logFileName+'.stdout')
-        outJdl.write('\n'+'Error  = '+self.logFilePath+os.sep+self.logFileName+'.stdout')
-        outJdl.write('\n'+'Log  = '+self.logFilePath+os.sep+self.logFileName+'.log')
+        outJdl.write('\n'+'Output = '+self.logFilePath+os.sep+self.logFileName+'_$(Cluster)_$(Process).stdout')
+        outJdl.write('\n'+'Error  = '+self.logFilePath+os.sep+self.logFileName+'_$(Cluster)_$(Process).stdout')
+        outJdl.write('\n'+'Log  = '+self.logFilePath+os.sep+self.logFileName+'_$(Cluster)_$(Process).log')
         outJdl.write('\n'+'Arguments = $(Cluster) $(Process) '+self.Arguments)
         outJdl.write('\n'+'Queue '+str(self.Queue))
         outJdl.close()
 
-    def shFileCreater(self):
+    def shFileHeaderCreater(self):
         outScript = open(self.fileName+".sh","w");
         outScript.write('#!/bin/bash')
         outScript.write('\n'+'echo "Starting job on " `date`')
@@ -58,8 +52,8 @@ class condorJobHelper(object):
         outScript.write('\n'+'echo "'+'#'*51+'"')
         outScript.write('\n'+'echo "#    List of Input Arguments: "')
         outScript.write('\n'+'echo "'+'#'*51+'"')
-        outScript.write('\n'+'echo "Input Arguments: $1" ')
-        outScript.write('\n'+'echo "Input Arguments: $2" ')
+        outScript.write('\n'+'echo "Input Arguments (CluserID): $1" ')
+        outScript.write('\n'+'echo "Input Arguments (ProcessID): $2" ')
         for x in xrange(3,len(self.Arguments)+3):
             outScript.write('\n'+'echo "Input Arguments: $'+x+'" ')
         outScript.write('\n'+'echo "'+'#'*51+'"')
@@ -68,6 +62,7 @@ class condorJobHelper(object):
         return self.fileName+'.sh'
 
     def jdlAndShFileCreater(self):
-        jdlFile = self.jdlFileCreater()
+        jdlFile = self.jdlFileHeaderCreater()
+        jdlFile = self.jdlFileAppendLogInfo()
         shFile = self.shFileCreater()
         return jdlFile, shFile
