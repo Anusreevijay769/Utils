@@ -10,6 +10,7 @@ class condorJobHelper(object):
                  logFilePath = 'test',
                  logFileName = 'test',
                  Arguments="",
+                 JobFlavour="longlunch",
                  Queue=1):
         self.fileName = fileName
         self.listOfFilesToTransfer = listOfFilesToTransfer
@@ -18,6 +19,7 @@ class condorJobHelper(object):
         self.logFilePath = logFilePath
         self.logFileName = logFileName
         self.Arguments = Arguments
+        self.JobFlavour = JobFlavour
         self.Queue = Queue
 
     def jdlFileHeaderCreater(self):
@@ -29,6 +31,7 @@ class condorJobHelper(object):
         outJdl.write('\n'+'WhenToTransferOutput = ON_EXIT')
         outJdl.write('\n'+'Transfer_Input_Files = '+self.fileName+'.sh, ' + self.listOfFilesToTransfer)
         outJdl.write('\n'+'x509userproxy = $ENV(X509_USER_PROXY)')
+        outJdl.write('\n'+'+JobFlavour = "'+self.JobFlavour+'"')
         if self.request_memory != 0: outJdl.write('\n'+'request_memory = '+str(self.request_memory))
         if self.request_cpus != 0: outJdl.write('\n'+'request_cpus = '+ str(self.request_cpus))
         return self.fileName+'.jdl'
