@@ -28,6 +28,7 @@ class FileHelper():
             [type] -- [description]
         """
         LogDirName = str(self.logPath)+os.sep+str(self.dirName)
+        print('mkdir -p '+ LogDirName)
         os.system('mkdir -p '+ LogDirName)
         print "==> Created directory for log files: ",LogDirName
         return LogDirName
@@ -42,7 +43,9 @@ class FileHelper():
             string -- created directory in the store area
 
         """
-        os.system('xrdfs root://cmseos.fnal.gov/ mkdir '+path)
+        print('xrdfs root://cmseos.fnal.gov/ mkdir '+path)
+        # os.system('xrdfs root://cmseos.fnal.gov/ mkdir '+path)
+        os.system('mkdir  -p '+path)
         print "==> Created dire at eos path: ",path
         return path
 

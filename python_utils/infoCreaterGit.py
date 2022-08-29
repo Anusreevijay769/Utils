@@ -25,7 +25,7 @@ class BasicInfoCreater():
 
     def GenerateGitPatch(self):
         os.system('git diff > '+self.GITPATCH)
-        
+
     def GenerateGitPatchAndLog(self):
         os.system('git diff > '+self.GITPATCH)
 
@@ -42,7 +42,7 @@ class BasicInfoCreater():
 
     def SendGitLogAndPatchToEos(self, outputFolder):
         print "\ncopying "+self.logFileName+" to path: "+outputFolder
-        os.system('xrdcp -f ' + self.logFileName + ' root://cmseos.fnal.gov/' + outputFolder + os.sep + self.logFileName)
+        os.system('cp ' + self.logFileName + '  ' + outputFolder + os.sep + self.logFileName)
         print "\ncopying "+self.GITPATCH+" to path: "+outputFolder
-        os.system('xrdcp -f ' + self.GITPATCH + ' root://cmseos.fnal.gov/' + outputFolder + os.sep + self.GITPATCH)
+        os.system('cp ' + self.GITPATCH + '  ' + outputFolder + os.sep + self.GITPATCH)
         # print "\n\n"
