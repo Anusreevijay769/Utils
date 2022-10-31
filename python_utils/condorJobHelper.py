@@ -31,6 +31,7 @@ class condorJobHelper(object):
         outJdl.write('\n'+'WhenToTransferOutput = ON_EXIT')
         outJdl.write('\n'+'Transfer_Input_Files = '+self.fileName+'.sh, ' + self.listOfFilesToTransfer)
         outJdl.write('\n'+'x509userproxy = $ENV(X509_USER_PROXY)')
+        outJdl.write('\n'+'getenv      = True')
         outJdl.write('\n'+'+JobFlavour = "'+self.JobFlavour+'"')
         if self.request_memory != 0: outJdl.write('\n'+'request_memory = '+str(self.request_memory))
         if self.request_cpus != 0: outJdl.write('\n'+'request_cpus = '+ str(self.request_cpus))
@@ -38,9 +39,9 @@ class condorJobHelper(object):
 
     def jdlFileAppendLogInfo(self):
         outJdl = open(self.fileName+'.jdl','a')
-        outJdl.write('\n'+'Output = '+self.logFilePath+os.sep+self.logFileName+'_$(Cluster)_$(Process).stdout')
-        outJdl.write('\n'+'Error  = '+self.logFilePath+os.sep+self.logFileName+'_$(Cluster)_$(Process).stdout')
-        outJdl.write('\n'+'Log  = '+self.logFilePath+os.sep+self.logFileName+'_$(Cluster)_$(Process).log')
+        outJdl.write('\n'+'Output = '+self.logFilePath+os.sep+'log_$(Cluster)_$(Process).stdout')
+        outJdl.write('\n'+'Error  = '+self.logFilePath+os.sep+'log_$(Cluster)_$(Process).stdout')
+        outJdl.write('\n'+'Log  = '+self.logFilePath+os.sep+'log_$(Cluster)_$(Process).log')
         outJdl.write('\n'+'Arguments = $(Cluster) $(Process) '+self.Arguments)
         outJdl.write('\n'+'Queue '+str(self.Queue))
         outJdl.close()
