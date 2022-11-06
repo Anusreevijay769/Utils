@@ -41,7 +41,7 @@ class condorJobHelper(object):
         outJdl = open(self.fileName+'.jdl','a')
         outJdl.write('\n'+'Output = '+self.logFilePath+os.sep+'log_$(Cluster)_$(Process).stdout')
         outJdl.write('\n'+'Error  = '+self.logFilePath+os.sep+'log_$(Cluster)_$(Process).stdout')
-        outJdl.write('\n'+'Log  = '+self.logFilePath+os.sep+'log_$(Cluster)_$(Process).log')
+        outJdl.write('\n'+'Log  = '+self.logFilePath+os.sep+'log_$(Cluster)_$(Process).stdout')
         outJdl.write('\n'+'Arguments = $(Cluster) $(Process) '+self.Arguments)
         outJdl.write('\n'+'Queue '+str(self.Queue))
         outJdl.close()
