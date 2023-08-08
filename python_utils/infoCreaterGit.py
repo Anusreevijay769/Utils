@@ -1,48 +1,41 @@
 import os
 
-class BasicInfoCreater():
-    """docstring for BasicInfoCreater"""
+class BasicInfoCreater:
+    """
+    A class to create Git logs and patches for job submissions.
+    """
 
     GITPATCH = 'gitDiff.patch'
 
-    def __init__(self, logFileName="summary.dat", optionalString=""):
+    def __init__(self, log_file_name="summary.dat", summary=""):
         self.CMSSWDirPath = os.environ['CMSSW_BASE']
         self.CMSSWRel = self.CMSSWDirPath.split("/")[-1]
-        self.logFileName = logFileName
-        self.optionalString = optionalString
+        self.logFileName = log_file_name
+        self.summary = summary
 
-    def GenerateGitLog(self):
-        outScript = open(self.logFileName,"w");
-        outScript.write('CMSSW Version used: ',self.CMSSWRel)
-        outScript.write('Current directory path: ',self.CMSSWDirPath)
-        outScript.write('Summary for current setup: ',self.optionalString)
-        outScript.close()
+    def generate_git_log(self):
+        git_log = (
+            f"CMSSW Version used: {self.CMSSWRel}\n"
+            f"Current directory path: {self.CMSSWDirPath}\n"
+            f"Summary for current setup: {self.summary}\n"
+        )
 
-        os.system('echo -e "\n\n============\n== Latest commit summary \n\n" >> '+self.logFileName )
-        os.system("git log -1 --pretty=tformat:' Commit: %h %n Date: %ad %n Relative time: %ar %n Commit Message: %s' >> "+self.logFileName )
-        os.system('echo -e "\n\n============\n" >> '+self.logFileName )
-        os.system('git log -1 --format="%H" >> '+self.logFileName )
+        with open(self.logFileName, "w") as out_script:
+            out_script.write(git_log)
+            out_script.write("\n\n============\n== Latest commit summary \n\n\n")
+            os.system(f"git log -1 --pretty=tformat:' Commit: %h %n Date: %ad %n Relative time: %ar %n Commit Message: %s' >> {self.logFileName}")
+            out_script.write("\n\n============\n\n")
+            os.system(f"git log -1 --format='%H' >> {self.logFileName}")
 
-    def GenerateGitPatch(self):
-        os.system('git diff > '+self.GITPATCH)
+    def generate_git_patch(self):
+        os.system(f'git diff > {self.GITPATCH}')
 
-    def GenerateGitPatchAndLog(self):
-        os.system('git diff > '+self.GITPATCH)
+    def generate_git_patch_and_log(self):
+        self.generate_git_patch()
+        self.generate_git_log()
 
-        outScript = open(self.logFileName,"w");
-        outScript.write('\nCMSSW Version used: '+self.CMSSWRel+'\n')
-        outScript.write('\nCurrent directory path: '+self.CMSSWDirPath+'\n')
-        outScript.write('\nSummary for current setup: '+self.optionalString+'\n')
-        outScript.close()
-
-        os.system('echo -e "\n\n============\n== Latest commit summary \n\n" >> '+self.logFileName )
-        os.system("git log -1 --pretty=tformat:' Commit: %h %n Date: %ad %n Relative time: %ar %n Commit Message: %s' >> "+self.logFileName )
-        os.system('echo -e "\n\n============\n" >> '+self.logFileName )
-        os.system('git log -1 --format="SHA: %H" >> '+self.logFileName )
-
-    def SendGitLogAndPatchToEos(self, outputFolder):
-        print "\ncopying "+self.logFileName+" to path: "+outputFolder
-        os.system('cp ' + self.logFileName + '  ' + outputFolder + os.sep + self.logFileName)
-        print "\ncopying "+self.GITPATCH+" to path: "+outputFolder
-        os.system('cp ' + self.GITPATCH + '  ' + outputFolder + os.sep + self.GITPATCH)
-        # print "\n\n"
+    def send_git_log_and_patch_to_eos(self, output_folder):
+        print(f"Copying {self.logFileName} to path: {output_folder}")
+        os.system(f'cp -f {self.logFileName} {output_folder}/{self.logFileName}')
+        print(f"Copying {self.GITPATCH} to path: {output_folder}")
+        os.system(f'cp -f {self.GITPATCH} {output_folder}/{self.GITPATCH}')
