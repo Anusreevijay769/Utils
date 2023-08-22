@@ -15,27 +15,27 @@ class BasicInfoCreater:
 
     def generate_git_log(self):
         git_log = (
-            f"CMSSW Version used: {self.CMSSWRel}\n"
-            f"Current directory path: {self.CMSSWDirPath}\n"
-            f"Summary for current setup: {self.summary}\n"
+            """CMSSW Version used: {}\n
+            Current directory path: {}\n
+            Summary for current setup: {}\n""".format(self.CMSSWRel, self.CMSSWDirPath, self.summary)
         )
 
         with open(self.logFileName, "w") as out_script:
             out_script.write(git_log)
             out_script.write("\n\n============\n== Latest commit summary \n\n\n")
-            os.system(f"git log -1 --pretty=tformat:' Commit: %h %n Date: %ad %n Relative time: %ar %n Commit Message: %s' >> {self.logFileName}")
+            os.system("git log -1 --pretty=tformat:' Commit: %h %n Date: %ad %n Relative time: %ar %n Commit Message: %s' >> {}".format(self.logFileName))
             out_script.write("\n\n============\n\n")
-            os.system(f"git log -1 --format='%H' >> {self.logFileName}")
+            os.system("git log -1 --format='%H' >> {}".format(self.logFileName))
 
     def generate_git_patch(self):
-        os.system(f'git diff > {self.GITPATCH}')
+        os.system('git diff > {}'.format(self.GITPATCH))
 
     def generate_git_patch_and_log(self):
         self.generate_git_patch()
         self.generate_git_log()
 
     def send_git_log_and_patch_to_eos(self, output_folder):
-        print(f"Copying {self.logFileName} to path: {output_folder}")
-        os.system(f'cp -f {self.logFileName} {output_folder}/{self.logFileName}')
-        print(f"Copying {self.GITPATCH} to path: {output_folder}")
-        os.system(f'cp -f {self.GITPATCH} {output_folder}/{self.GITPATCH}')
+        print("Copying {} to path: {}".format(self.logFileName, output_folder))
+        os.system('cp -f {} {}/{}'.format(self.logFileName, output_folder, self.logFileName))
+        print("Copying {} to path: {}".format(self.GITPATCH, output_folder))
+        os.system('cp -f {} {}/{}'.format(self.GITPATCH, output_folder, self.GITPATCH))
